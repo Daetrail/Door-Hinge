@@ -71,4 +71,4 @@ fastlane/screenshots/**/*.png
 fastlane/test_output
 .claude
 .DS_Store
-
+.idea
