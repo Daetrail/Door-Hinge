@@ -18,7 +18,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// Open SQLite DB
+	// Get absolute path for SQLite DB file and open it
 	dir, err := os.Getwd()
 	if err != nil {
 		log.Fatal(err)
@@ -28,7 +28,11 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer db.Close()
+	defer func() {
+		if err := db.Close(); err != nil {
+			log.Println("error closing database:", err)
+		}
+	}()
 
 	// Setup DB tables
 	if err := store.SetupDB(db); err != nil {
