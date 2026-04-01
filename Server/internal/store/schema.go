@@ -10,8 +10,8 @@ func SetupDB(db *sql.DB) error {
 			name TEXT NOT NULL,
 			gender INTEGER NOT NULL,
 			dateOfBirth DATETIME NOT NULL,
-			lat REAL,
-			lng REAL,
+			city TEXT NOT NULL,
+			country TEXT NOT NULL,
 			joinDate DATETIME DEFAULT CURRENT_TIMESTAMP,
 			pfpURL TEXT,
 			pwdHash TEXT NOT NULL

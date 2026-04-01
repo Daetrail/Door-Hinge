@@ -13,6 +13,14 @@ const (
 	GenderTrans
 )
 
+func (g Gender) IsValid() bool {
+	switch g {
+	case GenderMale, GenderFemale, GenderNonBinary, GenderLesbian, GenderGay, GenderTrans:
+		return true
+	}
+	return false
+}
+
 type Date struct {
 	time.Time
 }

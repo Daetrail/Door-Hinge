@@ -30,7 +30,7 @@ func main() {
 	}
 	defer func() {
 		if err := db.Close(); err != nil {
-			log.Println("error closing database:", err)
+			log.Println("Error closing database: ", err)
 		}
 	}()
 
