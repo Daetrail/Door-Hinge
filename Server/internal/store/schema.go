@@ -7,7 +7,8 @@ func SetupDB(db *sql.DB) error {
 		CREATE TABLE IF NOT EXISTS users (
 			id TEXT PRIMARY KEY,
 			email TEXT UNIQUE NOT NULL,
-			name TEXT NOT NULL,
+			firstName TEXT NOT NULL,
+			lastName TEXT NOT NULL,
 			gender INTEGER NOT NULL,
 			dateOfBirth DATETIME NOT NULL,
 			city TEXT NOT NULL,

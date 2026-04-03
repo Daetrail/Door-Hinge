@@ -3,6 +3,7 @@ module Server
 go 1.26
 
 require (
+	github.com/biter777/countries v1.7.5 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/golang-jwt/jwt/v5 v5.3.1 // indirect
 	github.com/google/uuid v1.6.0 // indirect

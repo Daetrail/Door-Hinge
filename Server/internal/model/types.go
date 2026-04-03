@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 type Gender int
 
@@ -36,4 +39,24 @@ func (d *Date) UnmarshalJSON(b []byte) error {
 	}
 	d.Time = t
 	return nil
+}
+
+func (d *Date) Scan(value any) error {
+	switch v := value.(type) {
+	case time.Time:
+		d.Time = v
+		return nil
+	case string:
+		t, err := time.Parse("2006-01-02", v)
+		if err != nil {
+			t, err = time.Parse("2006-01-02T15:04:05Z07:00", v)
+			if err != nil {
+				return err
+			}
+		}
+		d.Time = t
+		return nil
+	default:
+		return fmt.Errorf("cannot scan %T into Date", value)
+	}
 }

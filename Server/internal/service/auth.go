@@ -17,7 +17,14 @@ type AuthService struct {
 	secret string
 }
 
-func (s *AuthService) SignUp(ctx context.Context, email, name, password, city, country string, gender model.Gender, dob model.Date) (string, error) {
+func NewAuthService(users *store.UserStore, secret string) *AuthService {
+	return &AuthService{
+		users:  users,
+		secret: secret,
+	}
+}
+
+func (s *AuthService) SignUp(ctx context.Context, email, firstName, lastName, password, city, country string, gender model.Gender, dob time.Time) (string, error) {
 	// Check if user already exists
 	exists, err := s.users.EmailExists(ctx, email)
 	if err != nil {
@@ -34,7 +41,7 @@ func (s *AuthService) SignUp(ctx context.Context, email, name, password, city, c
 	}
 
 	// Save user to database
-	userID, err := s.users.Create(ctx, email, name, string(hash), city, country, gender, dob)
+	userID, err := s.users.Create(ctx, email, firstName, lastName, string(hash), city, country, gender, dob)
 	if err != nil {
 		return "", err
 	}
@@ -47,6 +54,7 @@ func (s *AuthService) SignIn(ctx context.Context, email, password string) (strin
 	user, err := s.users.GetByEmail(ctx, email)
 
 	if err != nil {
+		// User doesn't exist
 		if errors.Is(err, sql.ErrNoRows) {
 			return "", ErrInvalidCredentials
 		}

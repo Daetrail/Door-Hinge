@@ -4,6 +4,8 @@
 
 ## Server
 server/data/datingapp.db
+server/data/datingapp.db-shm
+server/data/datingapp.db-wal
 
 ## Build generated
 build/
