@@ -69,16 +69,18 @@ func main() {
 
 	// Public
 	// Auth
-	mux.HandleFunc("POST /api/auth/sign-up", authHandler.SignUp)
-	mux.HandleFunc("POST /api/auth/sign-in", authHandler.SignIn)
+	mux.HandleFunc("POST /auth/sign-up", authHandler.SignUp)
+	mux.HandleFunc("POST /auth/sign-in", authHandler.SignIn)
 
 	// Protected
+	// Auth
+	mux.Handle("GET /auth/verify", authMiddleware(http.HandlerFunc(authHandler.Verify)))
 	// User
-	mux.Handle("GET /api/user/me", authMiddleware(http.HandlerFunc(userHandler.Me)))
+	mux.Handle("GET /user/me", authMiddleware(http.HandlerFunc(userHandler.Me)))
 
 	// Catch-all route
 	mux.HandleFunc("/", handler.NotFound)
 
-	log.Println("Listening on :8080")
-	log.Fatal(http.ListenAndServe(":8080", mux))
+	log.Println("Listening on :4892")
+	log.Fatal(http.ListenAndServe(":4892", mux))
 }

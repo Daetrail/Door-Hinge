@@ -7,14 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		D1D0C6D82F7ACE2A00C10620 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = D1D0C6D72F7ACE2600C10620 /* .gitignore */; };
-		D1D0C6E32F7ACEE600C10620 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = D1D0C6E22F7ACEE600C10620 /* README.md */; };
+		D119618A2F7FD68000E2A9C8 /* MultipartFormData in Frameworks */ = {isa = PBXBuildFile; productRef = D11961892F7FD68000E2A9C8 /* MultipartFormData */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		D1D0C6C92F7ACE0F00C10620 /* DoorHinge.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DoorHinge.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		D1D0C6D72F7ACE2600C10620 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
-		D1D0C6E22F7ACEE600C10620 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -30,6 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D119618A2F7FD68000E2A9C8 /* MultipartFormData in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -39,8 +37,6 @@
 		D1D0C6C02F7ACE0F00C10620 = {
 			isa = PBXGroup;
 			children = (
-				D1D0C6E22F7ACEE600C10620 /* README.md */,
-				D1D0C6D72F7ACE2600C10620 /* .gitignore */,
 				D1D0C6CB2F7ACE0F00C10620 /* DoorHinge */,
 				D1D0C6CA2F7ACE0F00C10620 /* Products */,
 			);
@@ -74,6 +70,7 @@
 			);
 			name = DoorHinge;
 			packageProductDependencies = (
+				D11961892F7FD68000E2A9C8 /* MultipartFormData */,
 			);
 			productName = DoorHinge;
 			productReference = D1D0C6C92F7ACE0F00C10620 /* DoorHinge.app */;
@@ -103,6 +100,9 @@
 			);
 			mainGroup = D1D0C6C02F7ACE0F00C10620;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				D11961882F7FD68000E2A9C8 /* XCRemoteSwiftPackageReference "swift-multipart-formdata" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = D1D0C6CA2F7ACE0F00C10620 /* Products */;
 			projectDirPath = "";
@@ -118,8 +118,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D1D0C6E32F7ACEE600C10620 /* README.md in Resources */,
-				D1D0C6D82F7ACE2A00C10620 /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -345,6 +343,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		D11961882F7FD68000E2A9C8 /* XCRemoteSwiftPackageReference "swift-multipart-formdata" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/FelixHerrmann/swift-multipart-formdata.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.5.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		D11961892F7FD68000E2A9C8 /* MultipartFormData */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D11961882F7FD68000E2A9C8 /* XCRemoteSwiftPackageReference "swift-multipart-formdata" */;
+			productName = MultipartFormData;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = D1D0C6C12F7ACE0F00C10620 /* Project object */;
 }

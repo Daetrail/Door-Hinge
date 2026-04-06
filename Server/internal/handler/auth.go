@@ -118,6 +118,10 @@ func (h *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) {
 	SendSuccess(w, http.StatusCreated, authResponse{Token: token})
 }
 
+func (h *AuthHandler) Verify(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+}
+
 func (r *signUpRequest) validate() bool {
 	// Check if email is valid
 	_, err := mail.ParseAddress(r.Email)
