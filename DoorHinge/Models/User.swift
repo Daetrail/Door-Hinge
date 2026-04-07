@@ -19,12 +19,15 @@ enum Gender: Int, Codable {
 struct User: Codable {
     let id: String
     let email: String
+    
     let firstName: String
     let lastName: String
     let gender: Gender
+    
     let dateOfBirth: Date
     let city: String
     let country: String
+    
     let joinDate: Date
     let pfpURL: String?
 }

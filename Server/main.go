@@ -52,6 +52,14 @@ func main() {
 
 	// Create stores
 	userStore := store.NewUserStore(db)
+	cityStore := store.NewCityStore(db)
+
+	// Add cities in DB
+	const cityFilename = "./data/cities15000.txt"
+	err = cityStore.AddCountryCityData(cityFilename)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// Create services
 	authService := service.NewAuthService(userStore, jwtSecret)
@@ -60,6 +68,7 @@ func main() {
 	// Create handlers
 	authHandler := handler.NewAuthHandler(authService)
 	userHandler := handler.NewUserHandler(userService)
+	cityHandler := handler.NewCityHandler(cityStore)
 
 	// Create middleware
 	authMiddleware := middleware.AuthMiddleware(jwtSecret)
@@ -71,6 +80,9 @@ func main() {
 	// Auth
 	mux.HandleFunc("POST /auth/sign-up", authHandler.SignUp)
 	mux.HandleFunc("POST /auth/sign-in", authHandler.SignIn)
+
+	// City
+	mux.HandleFunc("GET /city", cityHandler.CitiesFromCountryCode)
 
 	// Protected
 	// Auth

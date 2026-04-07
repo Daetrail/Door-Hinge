@@ -17,7 +17,7 @@ struct SignUpRequest: Codable {
     let city: String
     let country: String
     let gender: Gender
-    let dateOfBirth: Date
+    let dateOfBirth: String
 }
 
 struct SignInRequest: Codable {
@@ -38,7 +38,7 @@ final class AuthService {
         self.networkService = networkService
     }
     
-    func signUp(email: String, firstName: String, lastName: String, password: String, city: String, country: String, gender: Gender, dateOfBirth: Date) async throws {
+    func signUp(email: String, firstName: String, lastName: String, password: String, city: String, country: String, gender: Gender, dateOfBirth: String) async throws {
         let signUpReq = SignUpRequest(email: email, firstName: firstName, lastName: lastName, password: password, city: city, country: country, gender: gender, dateOfBirth: dateOfBirth)
         
         let response = try await networkService.post("/auth/sign-up", body: signUpReq)

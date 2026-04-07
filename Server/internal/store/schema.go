@@ -46,6 +46,12 @@ func SetupDB(db *sql.DB) error {
 			position INTEGER NOT NULL,
 			FOREIGN KEY (bioID) REFERENCES bios(id) ON DELETE CASCADE
 		);
+
+		CREATE TABLE IF NOT EXISTS country_city (
+			id INT PRIMARY KEY,
+			countryCode TEXT NOT NULL,
+			city TEXT NOT NULL
+		);
 	`)
 
 	return err

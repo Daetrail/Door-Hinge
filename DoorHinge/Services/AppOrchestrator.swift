@@ -36,5 +36,10 @@ final class AppOrchestrator {
             appState.authState = .unauthenticated
         }
     }
+    
+    func signOut() {
+        authService.signOut()
+        appState.authState = .unauthenticated
+    }
 }
 

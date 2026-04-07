@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		D119618A2F7FD68000E2A9C8 /* MultipartFormData in Frameworks */ = {isa = PBXBuildFile; productRef = D11961892F7FD68000E2A9C8 /* MultipartFormData */; };
+		D11962252F85A4AD00E2A9C8 /* ValidatorCore in Frameworks */ = {isa = PBXBuildFile; productRef = D11962242F85A4AD00E2A9C8 /* ValidatorCore */; };
+		D11962272F85A4AD00E2A9C8 /* ValidatorUI in Frameworks */ = {isa = PBXBuildFile; productRef = D11962262F85A4AD00E2A9C8 /* ValidatorUI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +29,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D11962252F85A4AD00E2A9C8 /* ValidatorCore in Frameworks */,
+				D11962272F85A4AD00E2A9C8 /* ValidatorUI in Frameworks */,
 				D119618A2F7FD68000E2A9C8 /* MultipartFormData in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -71,6 +75,8 @@
 			name = DoorHinge;
 			packageProductDependencies = (
 				D11961892F7FD68000E2A9C8 /* MultipartFormData */,
+				D11962242F85A4AD00E2A9C8 /* ValidatorCore */,
+				D11962262F85A4AD00E2A9C8 /* ValidatorUI */,
 			);
 			productName = DoorHinge;
 			productReference = D1D0C6C92F7ACE0F00C10620 /* DoorHinge.app */;
@@ -102,6 +108,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				D11961882F7FD68000E2A9C8 /* XCRemoteSwiftPackageReference "swift-multipart-formdata" */,
+				D11962232F85A4AD00E2A9C8 /* XCRemoteSwiftPackageReference "validator" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = D1D0C6CA2F7ACE0F00C10620 /* Products */;
@@ -353,6 +360,14 @@
 				minimumVersion = 1.5.1;
 			};
 		};
+		D11962232F85A4AD00E2A9C8 /* XCRemoteSwiftPackageReference "validator" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/space-code/validator.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.5.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -360,6 +375,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = D11961882F7FD68000E2A9C8 /* XCRemoteSwiftPackageReference "swift-multipart-formdata" */;
 			productName = MultipartFormData;
+		};
+		D11962242F85A4AD00E2A9C8 /* ValidatorCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D11962232F85A4AD00E2A9C8 /* XCRemoteSwiftPackageReference "validator" */;
+			productName = ValidatorCore;
+		};
+		D11962262F85A4AD00E2A9C8 /* ValidatorUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D11962232F85A4AD00E2A9C8 /* XCRemoteSwiftPackageReference "validator" */;
+			productName = ValidatorUI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

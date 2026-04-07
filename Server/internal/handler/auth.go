@@ -3,8 +3,10 @@ package handler
 import (
 	"Server/internal/model"
 	"Server/internal/service"
+	"bytes"
 	"encoding/json"
 	"errors"
+	"io"
 	"log"
 	"net/http"
 	"net/mail"
@@ -57,22 +59,26 @@ func (h *AuthHandler) SignUp(w http.ResponseWriter, r *http.Request) {
 	var req signUpRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		SendError(w, http.StatusBadRequest, "invalid request")
+		log.Println("JSON Invalid")
 		return
 	}
 
 	if !req.validate() {
 		SendError(w, http.StatusBadRequest, "not all fields valid")
+		log.Println("Not all fields valid")
 		return
 	}
 
 	dob, err := time.Parse("2006-01-02", req.DateOfBirth)
 	if err != nil {
 		SendError(w, http.StatusBadRequest, "invalid date of birth")
+		log.Println("Invalid date of birth")
 		return
 	}
 
 	if age(dob) < 18 {
 		SendError(w, http.StatusBadRequest, "not old enough")
+		log.Println("Not old enough")
 		return
 	}
 
