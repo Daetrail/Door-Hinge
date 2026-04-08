@@ -3,10 +3,8 @@ package handler
 import (
 	"Server/internal/model"
 	"Server/internal/service"
-	"bytes"
 	"encoding/json"
 	"errors"
-	"io"
 	"log"
 	"net/http"
 	"net/mail"

@@ -10,9 +10,9 @@ type Gender int
 const (
 	GenderMale Gender = iota
 	GenderFemale
-	GenderNonBinary
-	GenderLesbian
 	GenderGay
+	GenderLesbian
+	GenderNonBinary
 	GenderTrans
 )
 
