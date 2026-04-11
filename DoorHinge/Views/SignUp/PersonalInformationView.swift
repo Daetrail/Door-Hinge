@@ -10,6 +10,7 @@ import ValidatorUI
 import ValidatorCore
 
 struct PersonalInformationView: View {
+    @Environment(\.colorScheme) var colorScheme
     @Binding var navigationPath: NavigationPath
     @Bindable private var vm: SignUpViewModel
     
@@ -30,17 +31,17 @@ struct PersonalInformationView: View {
                 VStack(spacing: 10) {
                     Text("Basic")
                         .font(.system(size: 40, weight: .bold, design: .serif))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(colorScheme == .dark ? .white : .black)
                     
                     Text("Let your potential matches know your name and gender.")
                         .font(.system(size: 20, weight: .light, design: .serif))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(colorScheme == .dark ? .white : .black)
                         .multilineTextAlignment(.center)
                 }
                 
                 VStack(spacing: 10) {
                     InputField(iconSystemName: "f.circle") {
-                        TextField("", text: $vm.firstName, prompt: Text("First name").foregroundStyle(.black.opacity(0.5)))
+                        TextField("", text: $vm.firstName, prompt: Text("First name").foregroundStyle(colorScheme == .dark ? .white.opacity(0.5) : .black.opacity(0.5)))
                             .textContentType(.name)
                             .textInputAutocapitalization(.words)
                     }
@@ -56,7 +57,7 @@ struct PersonalInformationView: View {
                     })
                     
                     InputField(iconSystemName: "l.circle") {
-                        TextField("", text: $vm.lastName, prompt: Text("Last name").foregroundStyle(.black.opacity(0.5)))
+                        TextField("", text: $vm.lastName, prompt: Text("Last name").foregroundStyle(colorScheme == .dark ? .white.opacity(0.5) : .black.opacity(0.5)))
                             .textContentType(.name)
                             .textInputAutocapitalization(.words)
                     }
@@ -73,7 +74,7 @@ struct PersonalInformationView: View {
                     
                     InputField(iconSystemName: "person") {
                         Text("Gender")
-                            .foregroundStyle(.black)
+                            .foregroundStyle(colorScheme == .dark ? .gray : .black)
                        
                         Spacer()
                         
@@ -98,41 +99,44 @@ struct PersonalInformationView: View {
                             }
                         } label: {
                             HStack {
-                                Group {
-                                    switch vm.gender {
-                                    case .male:
-                                        Text("Male")
-                                            .frame(minWidth: 100, alignment: .trailing)
-                                    case .female:
-                                        Text("Female")
-                                            .frame(minWidth: 100, alignment: .trailing)
-                                    case .gay:
-                                        Text("Gay")
-                                            .frame(minWidth: 100, alignment: .trailing)
-                                    case .lesbian:
-                                        Text("Lesbian")
-                                            .frame(minWidth: 100, alignment: .trailing)
-                                    case .nonBinary:
-                                        Text("Non-binary")
-                                            .frame(minWidth: 100, alignment: .trailing)
-                                    case .trans:
-                                        Text("Transgender")
-                                            .frame(minWidth: 100, alignment: .trailing)
-                                    }
+                                ZStack {
+                                    Text("Transgender").hidden()
                                     
+                                    Group {
+                                        switch vm.gender {
+                                        case .male:
+                                            Text("Male")
+                                                .frame(maxWidth: .infinity, alignment: .trailing)
+                                        case .female:
+                                            Text("Female")
+                                                .frame(maxWidth: .infinity, alignment: .trailing)
+                                        case .gay:
+                                            Text("Gay")
+                                                .frame(maxWidth: .infinity, alignment: .trailing)
+                                        case .lesbian:
+                                            Text("Lesbian")
+                                                .frame(maxWidth: .infinity, alignment: .trailing)
+                                        case .nonBinary:
+                                            Text("Non-binary")
+                                                .frame(maxWidth: .infinity, alignment: .trailing)
+                                        case .trans:
+                                            Text("Transgender")
+                                                .frame(maxWidth: .infinity, alignment: .trailing)
+                                        }
+                                        
+                                    }
                                 }
-                                .fixedSize()
+                                .frame(maxWidth: .infinity, alignment: .trailing)
                                 
                                 Image(systemName: "chevron.up.chevron.down")
                             }
-                            .foregroundStyle(.black.opacity(0.9))
+                            .foregroundStyle(colorScheme == .dark ? .white.opacity(0.7) : .black)
                         }
-                        .frame(maxWidth: .infinity)
                     }
                 
                     InputField(iconSystemName: "calendar") {
                         Text("Birthday")
-                            .foregroundStyle(.black)
+                            .foregroundStyle(colorScheme == .dark ? .gray : .black)
                         
                         Spacer()
                         
@@ -141,6 +145,7 @@ struct PersonalInformationView: View {
                             .labelsHidden()
                             .scaleEffect(0.85, anchor: .trailing)
                             .frame(width: 110, height: 25, alignment: .trailing)
+                            .tint(colorScheme == .dark ? .white.opacity(0.7) : .black)
                     }
                 }
                 
@@ -161,7 +166,7 @@ struct PersonalInformationView: View {
             .padding(25)
             .background {
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(.black.opacity(0.6))
+                    .fill(colorScheme == .dark ? .black.opacity(0.6) : .white.opacity(0.8))
             }
             .frame(maxWidth: .infinity)
             .containerRelativeFrame(.horizontal) { length, _ in
@@ -174,9 +179,9 @@ struct PersonalInformationView: View {
 
 #Preview {
     @Previewable @State var navigationPath = NavigationPath()
-    let networkService = NetworkService(baseURL: Constants.apiUrl)
-    let authService = AuthService(networkService: networkService)
     let appState = AppState()
+    let networkService = NetworkService(appState: appState, baseURL: Constants.apiUrl)
+    let authService = AuthService(networkService: networkService)
     
     NavigationStack {
         PersonalInformationView(vm: SignUpViewModel(networkService: networkService, authService: authService, appState: appState), navigationPath: $navigationPath)

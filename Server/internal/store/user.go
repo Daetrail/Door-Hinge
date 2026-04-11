@@ -4,6 +4,10 @@ import (
 	"Server/internal/model"
 	"context"
 	"database/sql"
+	"io"
+	"mime/multipart"
+	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -55,4 +59,64 @@ func (store *UserStore) EmailExists(ctx context.Context, email string) (bool, er
 		strings.ToLower(email),
 	).Scan(&exists)
 	return exists, err
+}
+
+func (store *UserStore) DoesUserHaveProfilePicture(ctx context.Context, id string) (bool, string, error) {
+	user, err := store.GetByID(ctx, id)
+	if err != nil {
+		return false, "", err
+	}
+
+	if user.PfpURL != nil {
+		return true, *user.PfpURL, nil
+	}
+
+	return false, "", nil
+}
+
+func (store *UserStore) SetProfilePicture(ctx context.Context, id string, file multipart.File, filetype string) (e error) {
+	// Does user have a profile picture, if so what is the filename
+	hasProfilePicture, profilePictureFilename, err := store.DoesUserHaveProfilePicture(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	// Create uploads/profile_pictures directory within the data directory if it doesn't exist
+	if err := os.MkdirAll(filepath.Join("data", "uploads", "profile_pictures"), 0755); err != nil {
+		return err
+	}
+
+	// Write profile picture to disk
+	filename := uuid.New().String() + "." + filetype
+	path := filepath.Join("data", "uploads", "profile_pictures", filename)
+	dst, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if err := dst.Close(); err != nil {
+			e = err
+		}
+	}()
+	if _, err := io.Copy(dst, file); err != nil {
+		return err
+	}
+
+	// Delete previous profile picture of user
+	if hasProfilePicture {
+		if err := os.Remove(filepath.Join("data", "uploads", "profile_pictures", profilePictureFilename)); err != nil {
+			return err
+		}
+	}
+
+	// Update pfpURL of user in database
+	_, err = store.db.ExecContext(ctx,
+		"UPDATE users SET pfpURL = ? WHERE id = ?",
+		filename, id,
+	)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

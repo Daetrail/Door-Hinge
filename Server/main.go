@@ -89,6 +89,8 @@ func main() {
 	mux.Handle("GET /auth/verify", authMiddleware(http.HandlerFunc(authHandler.Verify)))
 	// User
 	mux.Handle("GET /user/me", authMiddleware(http.HandlerFunc(userHandler.Me)))
+	mux.Handle("GET /user/pfp", authMiddleware(http.HandlerFunc(userHandler.GetProfilePicture)))
+	mux.Handle("POST /user/pfp", authMiddleware(http.HandlerFunc(userHandler.SetProfilePicture)))
 
 	// Catch-all route
 	mux.HandleFunc("/", handler.NotFound)

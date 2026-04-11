@@ -9,11 +9,9 @@ import SwiftUI
 import ValidatorCore
 
 struct ContactInformationView: View {
+    @Environment(\.colorScheme) var colorScheme
     @Binding var navigationPath: NavigationPath
     @Bindable private var vm: SignUpViewModel
-    
-    @State private var showPassword = false
-    @FocusState private var isFocused: Bool
     
     init(vm: SignUpViewModel, navigationPath: Binding<NavigationPath>) {
         self._navigationPath = navigationPath
@@ -30,17 +28,17 @@ struct ContactInformationView: View {
                 VStack(spacing: 10) {
                     Text("Contact")
                         .font(.system(size: 40, weight: .bold, design: .serif))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(colorScheme == .dark ? .white : .black)
                     
                     Text("Get emails about getting matched up and protect your account with a secure password.")
                         .font(.system(size: 20, weight: .light, design: .serif))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(colorScheme == .dark ? .white : .black)
                         .multilineTextAlignment(.center)
                 }
                 
                 VStack(spacing: 10) {
                     InputField(iconSystemName: "envelope") {
-                        TextField("", text: $vm.email, prompt: Text("Email").foregroundStyle(.black.opacity(0.5)))
+                        TextField("", text: $vm.email, prompt: Text("Email").foregroundStyle(colorScheme == .dark ? .white.opacity(0.5) : .black.opacity(0.5)))
                             .keyboardType(.emailAddress)
                             .textContentType(.emailAddress)
                             .textInputAutocapitalization(.never)
@@ -58,27 +56,10 @@ struct ContactInformationView: View {
                     })
                     
                     InputField(iconSystemName: "key") {
-                        if showPassword {
-                            TextField("", text: $vm.password, prompt: Text("Password").foregroundStyle(.black.opacity(0.5)))
-                                .textContentType(.password)
-                                .textInputAutocapitalization(.never)
-                                .autocorrectionDisabled()
-                                .focused($isFocused)
-                        } else {
-                            SecureField("", text: $vm.password, prompt: Text("Password").foregroundStyle(.black.opacity(0.5)))
-                                .textContentType(.password)
-                                .textInputAutocapitalization(.never)
-                                .autocorrectionDisabled()
-                                .focused($isFocused)
-                        }
-                        
-                        Button {
-                            showPassword.toggle()
-                            isFocused = true
-                        } label: {
-                            Image(systemName: showPassword ? "eye.slash" : "eye")
-                                .foregroundStyle(.gray)
-                        }
+                        SecureField("", text: $vm.password, prompt: Text("Password").foregroundStyle(colorScheme == .dark ? .white.opacity(0.5) : .black.opacity(0.5)))
+                            .textContentType(.password)
+                            .textInputAutocapitalization(.never)
+                            .autocorrectionDisabled()
                     }
                     .modifier(FieldValidation(text: $vm.password, isValid: $vm.isPasswordValid, rules: [
                         LengthValidationRule(min: 8, max: 32, error: "Between 8 and 32 characters long"),
@@ -87,7 +68,23 @@ struct ContactInformationView: View {
                         RegexValidationRule(pattern: "[0-9]", error: "Must have a digit character"),
                         RegexValidationRule(pattern: "[#?!@$%^&*-]", error: "Must have at least one of the following symbols: #?!@$%^&*-"),
                         RegexValidationRule(pattern: #"^[\x00-\x7F]+$"#, error: "Must only consist of ASCII characters")
-                        
+                    ]) { errors in
+                        ForEach(errors.indices, id: \.self) { i in
+                            Text(errors[i].message)
+                                .foregroundStyle(.red)
+                                .font(.caption)
+                                .padding(.leading)
+                        }
+                    })
+                    
+                    InputField(iconSystemName: "key") {
+                        SecureField("", text: $vm.confirmPassword, prompt: Text("Confirm password").foregroundStyle(colorScheme == .dark ? .white.opacity(0.5) : .black.opacity(0.5)))
+                            .textContentType(.password)
+                            .textInputAutocapitalization(.never)
+                            .autocorrectionDisabled()
+                    }
+                    .modifier(FieldValidation(text: $vm.confirmPassword, isValid: $vm.isConfirmPasswordValid, rules: [
+                        EqualityValidationRule(compareTo: vm.password, error: "Must match password"),
                     ]) { errors in
                         ForEach(errors.indices, id: \.self) { i in
                             Text(errors[i].message)
@@ -105,19 +102,23 @@ struct ContactInformationView: View {
                 } label: {
                     HStack {
                         Text("Finish")
-                    
-                        Image(systemName: "chevron.right")
-                            .font(.caption)
+                   
+                        if !vm.isLoading {
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                        } else {
+                            ProgressView()
+                        }
                     }
                 }
                 .buttonStyle(.glassProminent)
                 .tint(.orange)
-                .disabled(!(vm.isEmailValid && vm.isPasswordValid))
+                .disabled(!(vm.isEmailValid && vm.isPasswordValid && vm.isConfirmPasswordValid) || vm.isLoading)
             }
             .padding(25)
             .background {
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(.black.opacity(0.6))
+                    .fill(colorScheme == .dark ? .black.opacity(0.6) : .white.opacity(0.8))
             }
             .frame(maxWidth: .infinity)
             .containerRelativeFrame(.horizontal) { length, _ in
@@ -147,9 +148,9 @@ struct ContactInformationView: View {
 
 #Preview {
     @Previewable @State var navigationPath = NavigationPath()
-    let networkService = NetworkService(baseURL: Constants.apiUrl)
-    let authService = AuthService(networkService: networkService)
     let appState = AppState()
+    let networkService = NetworkService(appState: appState, baseURL: Constants.apiUrl)
+    let authService = AuthService(networkService: networkService)
     
     NavigationStack {
         ContactInformationView(vm: SignUpViewModel(networkService: networkService, authService: authService, appState: appState), navigationPath: $navigationPath)

@@ -13,11 +13,14 @@ enum OnboardingRoutes: Hashable {
 }
 
 struct OnboardingView: View {
+    @Environment(\.colorScheme) var colorScheme
     @State private var navigationPath = NavigationPath()
     @State private var signUpVM: SignUpViewModel
+    @State private var signInVM: SignInViewModel
     
     init(networkService: NetworkService, authService: AuthService, appState: AppState) {
         signUpVM = SignUpViewModel(networkService: networkService, authService: authService, appState: appState)
+        signInVM = SignInViewModel(authService: authService, appState: appState)
     }
     
     var body: some View {
@@ -36,17 +39,17 @@ struct OnboardingView: View {
                             VStack(alignment: .leading, spacing: 5) {
                                 Text("Find your match")
                                     .font(.system(size: 40, weight: .bold, design: .serif))
-                                    .foregroundStyle(.white)
+                                    .foregroundStyle(colorScheme == .dark ? .white : .black)
                                 
                                 Text("You won't be single anymore :)")
                                     .font(.system(size: 18, weight: .light, design: .serif))
-                                    .foregroundStyle(.white)
+                                    .foregroundStyle(colorScheme == .dark ? .white : .black)
                             }
                             
                             
                             HStack {
                                 Button {
-                                    
+                                    navigationPath.append(OnboardingRoutes.signIn)
                                 } label: {
                                     Text("Sign in")
                                         .font(.title3)
@@ -75,7 +78,7 @@ struct OnboardingView: View {
                     .padding()
                     .background {
                         RoundedRectangle(cornerRadius: 20)
-                            .fill(.black.opacity(0.6))
+                            .fill(colorScheme == .dark ? .black.opacity(0.6) : .white.opacity(0.8))
                     }
                     
                     Spacer()
@@ -89,18 +92,17 @@ struct OnboardingView: View {
                 case .signUp:
                     SignUpView(vm: signUpVM, navigationPath: $navigationPath)
                 case .signIn:
-                    SignInView()
+                    SignInView(vm: signInVM)
                 }
             }
-   
         }
     }
 }
 
 #Preview {
-    let networkService = NetworkService(baseURL: Constants.apiUrl)
-    let authService = AuthService(networkService: networkService)
     let appState = AppState()
+    let networkService = NetworkService(appState: appState, baseURL: Constants.apiUrl)
+    let authService = AuthService(networkService: networkService)
     
     OnboardingView(networkService: networkService, authService: authService, appState: appState)
 }

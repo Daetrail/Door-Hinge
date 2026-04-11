@@ -10,6 +10,6 @@ type User struct {
 	City        string  `json:"city"`
 	Country     string  `json:"country"`
 	JoinDate    Date    `json:"joinDate"`
-	PfpURL      *string `json:"pfpURL"`
+	PfpURL      *string `json:"-"`
 	PwdHash     string  `json:"-"`
 }

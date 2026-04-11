@@ -11,6 +11,7 @@ enum AppError: LocalizedError {
     case invalidRequest(String = "User input is malformed")
     case invalidResponse(String = "The server sent back malformed data")
     case unknownError(String = "An unknown error occurred")
+    case failedToDecodeImage(String = "Failed to decode image")
     case auth(AuthError)
     
     enum AuthError {
@@ -24,6 +25,7 @@ enum AppError: LocalizedError {
         case .invalidRequest(let msg): return msg
         case .invalidResponse(let msg): return msg
         case .unknownError(let msg): return msg
+        case .failedToDecodeImage(let msg): return msg
         case .auth(let authError):
             switch authError {
             case .tokenExpired(let msg): return msg

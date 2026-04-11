@@ -17,10 +17,10 @@ struct DoorHingeApp: App {
     
     init() {
         let state = AppState()
-        let nService = NetworkService(baseURL: Constants.apiUrl)
+        let nService = NetworkService(appState: state, baseURL: Constants.apiUrl)
         let aService = AuthService(networkService: nService)
         let aOrchestrator = AppOrchestrator(networkService: nService, authService: aService, appState: state)
-        let uService = UserService(networkService: nService)
+        let uService = UserService(networkService: nService, appOrchestrator: aOrchestrator)
         
         _appState = .init(initialValue: state)
         _networkService = .init(initialValue: nService)

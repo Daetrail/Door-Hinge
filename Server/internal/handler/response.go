@@ -12,6 +12,17 @@ type response struct {
 	Data    any    `json:"data,omitempty"`
 }
 
+func SendSuccessWithNoData(w http.ResponseWriter, status int) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	err := json.NewEncoder(w).Encode(response{
+		Success: true,
+	})
+	if err != nil {
+		log.Println("failed to encode response: ", err)
+	}
+}
+
 func SendSuccess(w http.ResponseWriter, status int, data any) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)

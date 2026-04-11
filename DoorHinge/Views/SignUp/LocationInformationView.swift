@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct LocationInformationView: View {
+    @Environment(\.colorScheme) var colorScheme
     @Binding var navigationPath: NavigationPath
     @Bindable private var vm: SignUpViewModel
    
@@ -78,18 +79,18 @@ struct LocationInformationView: View {
                 VStack(spacing: 10) {
                     Text("Location")
                         .font(.system(size: 40, weight: .bold, design: .serif))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(colorScheme == .dark ? .white : .black)
                     
                     Text("Match with people in your city.")
                         .font(.system(size: 20, weight: .light, design: .serif))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(colorScheme == .dark ? .white : .black)
                         .multilineTextAlignment(.center)
                 }
                 
                 VStack(spacing: 10) {
                     VStack(alignment: .leading, spacing: 5) {
                         Text("Country")
-                            .foregroundStyle(.white.opacity(0.7))
+                            .foregroundStyle(colorScheme == .dark ? .white.opacity(0.7) : .black)
                             .padding(.leading)
                             
                         InputField(iconSystemName: "globe") {
@@ -97,8 +98,14 @@ struct LocationInformationView: View {
                                 showCountryPicker = true
                             } label: {
                                 HStack {
-                                    Text(vm.country.isEmpty ? "Select a country" : vm.country)
-                                        .foregroundStyle(vm.country.isEmpty ? .black.opacity(0.5) : .primary)
+                                    if colorScheme == .light {
+                                        Text(vm.country.isEmpty ? "Select a country" : vm.country)
+                                            .foregroundStyle(vm.country.isEmpty ? .black.opacity(0.5) : .gray)
+                                    } else {
+                                        Text(vm.country.isEmpty ? "Select a country" : vm.country)
+                                            .foregroundStyle(vm.country.isEmpty ? .white.opacity(0.5) : .gray)
+                                    }
+                                    
                                     Spacer()
                                     Image(systemName: "chevron.down")
                                         .foregroundStyle(.black.opacity(0.5))
@@ -137,7 +144,7 @@ struct LocationInformationView: View {
                     
                     VStack(alignment: .leading, spacing: 5) {
                         Text("City")
-                            .foregroundStyle(.white.opacity(0.7))
+                            .foregroundStyle(colorScheme == .dark ? .white.opacity(0.7) : .black)
                             .padding(.leading)
                         
                         InputField(iconSystemName: "location") {
@@ -145,8 +152,24 @@ struct LocationInformationView: View {
                                 showCityPicker = true
                             } label: {
                                 HStack {
-                                    Text(vm.city.isEmpty ? "Select a city" : vm.city)
-                                        .foregroundStyle(vm.city.isEmpty ? .black.opacity(0.5) : .primary)
+                                    switch (vm.country, colorScheme) {
+                                    case let (c, cs) where c.isEmpty && cs == .light:
+                                        Text(vm.city.isEmpty ? "Pick a country first" : vm.city)
+                                            .foregroundStyle(vm.city.isEmpty ? .black.opacity(0.5) : .gray)
+                                    case let (c, cs) where c.isEmpty && cs == .dark:
+                                        Text(vm.city.isEmpty ? "Pick a country first" : vm.city)
+                                            .foregroundStyle(vm.city.isEmpty ? .white.opacity(0.5) : .gray)
+                                    case (_, .light):
+                                        Text(vm.city.isEmpty ? "Select a city" : vm.city)
+                                            .foregroundStyle(vm.city.isEmpty ? .black.opacity(0.5) : .gray)
+                                    case (_, .dark):
+                                        Text(vm.city.isEmpty ? "Select a city" : vm.city)
+                                            .foregroundStyle(vm.country.isEmpty ? .white.opacity(0.5) : .gray)
+                                    default:
+                                        Text(vm.city.isEmpty ? "Select a city" : vm.city)
+                                            .foregroundStyle(vm.country.isEmpty ? .white.opacity(0.5) : .gray)
+                                    }
+                                    
                                     Spacer()
                                     Image(systemName: "chevron.down")
                                         .foregroundStyle(.black.opacity(0.5))
@@ -180,7 +203,7 @@ struct LocationInformationView: View {
                         .overlay {
                             if vm.cityList.isEmpty {
                                 Capsule()
-                                    .fill(.black.opacity(0.4))
+                                    .fill(.black.opacity(0.3))
                             }
                         }
                     }
@@ -204,7 +227,7 @@ struct LocationInformationView: View {
             .padding(25)
             .background {
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(.black.opacity(0.6))
+                    .fill(colorScheme == .dark ? .black.opacity(0.6) : .white.opacity(0.8))
             }
             .frame(maxWidth: .infinity)
             .containerRelativeFrame(.horizontal) { length, _ in
@@ -226,9 +249,9 @@ struct LocationInformationView: View {
 
 #Preview {
     @Previewable @State var navigationPath = NavigationPath()
-    let networkService = NetworkService(baseURL: Constants.apiUrl)
-    let authService = AuthService(networkService: networkService)
     let appState = AppState()
+    let networkService = NetworkService(appState: appState, baseURL: Constants.apiUrl)
+    let authService = AuthService(networkService: networkService)
     
     NavigationStack {
         LocationInformationView(vm: SignUpViewModel(networkService: networkService, authService: authService, appState: appState), navigationPath: $navigationPath)

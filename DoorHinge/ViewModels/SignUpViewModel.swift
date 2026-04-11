@@ -25,7 +25,9 @@ final class SignUpViewModel {
     var isEmailValid = false
     
     var password = ""
+    var confirmPassword = ""
     var isPasswordValid = false
+    var isConfirmPasswordValid = false
     
     var country = ""
     var countryCode: String = "" {
@@ -42,6 +44,7 @@ final class SignUpViewModel {
     
     var showError = false
     var errorMessage = ""
+    var isLoading = false
     
     init(networkService: NetworkService, authService: AuthService, appState: AppState) {
         self.networkService = networkService
@@ -79,9 +82,17 @@ final class SignUpViewModel {
     
     func signUp() async {
         do {
+            guard !isLoading else {
+                return
+            }
+            
+            isLoading = true
+            
             try await authService.signUp(email: email, firstName: firstName, lastName: lastName, password: password, city: city, country: country, gender: gender, dateOfBirth: dateOfBirth.formatted(.iso8601.year().month().day().dateSeparator(.dash)))
             
             appState.authState = .authenticated
+            
+            resetForm()
             
         } catch AppError.auth(.emailTaken(let msg)) {
             errorMessage = msg
@@ -90,5 +101,20 @@ final class SignUpViewModel {
             errorMessage = err.localizedDescription
             showError = true
         }
+        
+        isLoading = false
+    }
+    
+    private func resetForm() {
+        cityList = []
+        firstName = ""
+        lastName = ""
+        email = ""
+        password = ""
+        confirmPassword = ""
+        city = ""
+        country = ""
+        dateOfBirth = Calendar.current.date(byAdding: .year, value: -18, to: .now)!
+        gender = .male
     }
 }

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 import MultipartFormData
 
 enum HTTPMethod: String {
@@ -27,6 +28,8 @@ struct Response {
 
 @Observable
 final class NetworkService {
+    private var appState: AppState
+    
     let baseURL: String
     var token: String?
     
@@ -36,8 +39,9 @@ final class NetworkService {
         return URLSession(configuration: config)
     }
     
-    init(baseURL: String) {
+    init(appState: AppState, baseURL: String) {
         self.baseURL = baseURL
+        self.appState = appState
     }
     
     func get(_ path: String) async throws -> Response {
@@ -91,14 +95,6 @@ final class NetworkService {
             throw URLError(.cannotParseResponse)
         }
         
-        if http.statusCode >= 500 {
-            throw URLError(.badServerResponse)
-        }
-        
-        if http.statusCode == 401 {
-            throw URLError(.userAuthenticationRequired)
-        }
-        
         return Response(data: data, status: http.statusCode)
     }
     
@@ -145,14 +141,6 @@ final class NetworkService {
         
         guard let http = response as? HTTPURLResponse else {
             throw URLError(.cannotParseResponse)
-        }
-        
-        if http.statusCode >= 500 {
-            throw URLError(.badServerResponse)
-        }
-        
-        if http.statusCode == 401 {
-            throw URLError(.userAuthenticationRequired)
         }
         
         return Response(data: data, status: http.statusCode)

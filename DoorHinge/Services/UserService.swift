@@ -6,16 +6,19 @@
 //
 
 import Foundation
+import UIKit
 
 @Observable
 final class UserService {
     private let networkService: NetworkService
+    private let appOrchestrator: AppOrchestrator
     
-    init(networkService: NetworkService) {
+    init(networkService: NetworkService, appOrchestrator: AppOrchestrator) {
         self.networkService = networkService
+        self.appOrchestrator = appOrchestrator
     }
     
-    func getUserData() async throws -> User {
+    func getUserData() async throws -> User? {
         let response = try await networkService.get("/user/me")
         
         switch response.status {
@@ -28,7 +31,31 @@ final class UserService {
             
             return user
             
-        case 400, 401:
+        case 401:
+            appOrchestrator.signOut()
+            return nil
+        case 400:
+            throw AppError.invalidRequest()
+        default:
+            throw AppError.unknownError()
+        }
+    }
+    
+    func getProfilePicture() async throws -> UIImage? {
+        let response = try await networkService.get("/user/pfp")
+        switch response.status {
+        case 200:
+            guard let image = UIImage(data: response.data) else {
+                throw AppError.failedToDecodeImage()
+            }
+            
+            return image
+        case 404:
+            return nil
+        case 401:
+            appOrchestrator.signOut()
+            return nil
+        case 400:
             throw AppError.invalidRequest()
         default:
             throw AppError.unknownError()
